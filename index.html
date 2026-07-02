@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agenda da Equipe - Folgas e Relatórios</title>
+  <style>
+    :root{
+      --bg:#eef3f9;
+      --card:#ffffff;
+      --primary:#145da0;
+      --primary2:#0b3d66;
+      --cyan:#1aa6b7;
+      --green:#22c55e;
+      --orange:#f59e0b;
+      --red:#ef4444;
+      --purple:#8b5cf6;
+      --pink:#ec4899;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#d8e3f0;
+      --softBlue:#e7f1ff;
+      --softGreen:#e9fbef;
+      --softOrange:#fff4df;
+      --softRed:#ffecec;
+      --softPurple:#f1ebff;
+      --softPink:#fce7f3;
+      --yellow:#eab308;
+      --softYellow:#fef9c3;
+      --teal:#0f766e;
+      --softTeal:#e1f7f2;
+      --brown:#92400e;
+      --softBrown:#fdf0e3;
+      --indigo:#4f46e5;
+      --softIndigo:#eae9fe;
+      --gray:#64748b;
+      --softGray:#eef2f6;
+    }
+
+    *{box-sizing:border-box;font-family:Arial, Helvetica, sans-serif}
+    body{margin:0;background:linear-gradient(180deg,#eaf2fb 0%,#f7f9fc 100%);color:var(--text)}
+
+    header{
+      background:linear-gradient(135deg,var(--primary2),var(--primary),var(--cyan));
+      color:white;
+      padding:24px 30px;
+      box-shadow:0 6px 20px rgba(11,61,102,.28);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    header h1{margin:0;font-size:29px}
+    header p{margin:7px 0 0;opacity:.93}
+
+    main{max-width:1550px;margin:auto;padding:20px}
+
+    .notice{
+      background:white;
+      border-left:7px solid var(--cyan);
+      border-radius:16px;
+      padding:15px 17px;
+      margin-bottom:16px;
+      box-shadow:0 4px 14px rgba(16,24,40,.07);
+      line-height:1.45;
+    }
+
+    .summary{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .summary-card{
+      border-radius:18px;
+      padding:16px;
+      color:white;
+      box-shadow:0 6px 16px rgba(16,24,40,.13);
+      min-height:95px;
+    }
+
+    .summary-card strong{display:block;font-size:31px;margin-bottom:3px}
+    .summary-card span{font-size:14px;opacity:.96}
+
+    .s1{background:linear-gradient(135deg,#145da0,#1aa6b7)}
+    .s2{background:linear-gradient(135deg,#0f766e,#22c55e)}
+    .s3{background:linear-gradient(135deg,#b45309,#f59e0b)}
+    .s4{background:linear-gradient(135deg,#b91c1c,#ef4444)}
+
+    .grid{
+      display:grid;
+      grid-template-columns:400px 1fr;
+      gap:16px;
+      align-items:start;
+    }
+
+    .panel{
+      background:rgba(255,255,255,.96);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:17px;
+      box-shadow:0 4px 14px rgba(16,24,40,.07);
+      margin-bottom:16px;
+      backdrop-filter:blur(6px);
+    }
+
+    .panel h2{margin:0 0 13px;color:var(--primary2);font-size:21px}
+
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:bold;
+      margin:9px 0 5px;
+      color:#374151;
+    }
+
+    input,select,textarea{
+      width:100%;
+      padding:11px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fff;
+      font-size:14px;
+      outline:none;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color:var(--cyan);
+      box-shadow:0 0 0 3px rgba(26,166,183,.16);
+    }
+
+    textarea{min-height:76px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+    button{
+      border:0;
+      border-radius:12px;
+      padding:10px 14px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:.18s;
+    }
+    button:hover{transform:translateY(-1px);filter:brightness(.98)}
+
+    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--cyan));color:#fff}
+    .btn-light{background:#edf3fa;color:#374151}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-small{padding:7px 9px;font-size:12px;border-radius:9px}
+    .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+
+    .calendar-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .calendar-title{
+      font-size:21px;
+      font-weight:bold;
+      color:var(--primary2);
+      text-transform:uppercase;
+    }
+
+    .calendar{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+    }
+
+    .dow{
+      text-align:center;
+      font-size:12px;
+      font-weight:bold;
+      color:var(--primary2);
+      background:#edf5ff;
+      border-radius:10px;
+      padding:8px;
+    }
+
+    .day{
+      background:white;
+      border:1px solid var(--border);
+      min-height:120px;
+      border-radius:15px;
+      padding:8px;
+      cursor:pointer;
+      transition:.15s;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .day:hover{outline:3px solid #cfe8ff}
+    .day.out{opacity:.45;background:#f8fafc}
+    .day.selected{outline:3px solid var(--primary)}
+    .day.today{border:2px solid var(--cyan)}
+    .day.holiday-week{background:linear-gradient(180deg,#fff8f8,#ffffff)}
+    .day-number{font-weight:bold;margin-bottom:5px;color:#111827}
+
+    .holiday-flag{
+      display:inline-block;
+      background:var(--red);
+      color:white;
+      border-radius:7px;
+      padding:3px 7px;
+      font-size:10px;
+      font-weight:bold;
+      margin-left:4px;
+    }
+
+    .pill{
+      display:block;
+      font-size:11px;
+      padding:5px 7px;
+      border-radius:999px;
+      background:var(--softBlue);
+      color:#1e3a8a;
+      margin-top:4px;
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+      border-left:4px solid var(--primary);
+    }
+
+    .pill.medico{background:var(--softGreen);color:#166534;border-left-color:var(--green)}
+    .pill.exame{background:var(--softTeal);color:#0f5c56;border-left-color:var(--teal)}
+    .pill.atraso{background:var(--softOrange);color:#7c4a00;border-left-color:var(--orange)}
+    .pill.saida{background:var(--softGray);color:#334155;border-left-color:var(--gray)}
+    .pill.banco{background:var(--softBrown);color:#92400e;border-left-color:var(--brown)}
+    .pill.ho{background:var(--softYellow);color:#854d0e;border-left-color:var(--yellow)}
+    .pill.curso{background:var(--softIndigo);color:#3730a3;border-left-color:var(--indigo)}
+    .pill.reuniao{background:var(--softBlue);color:#1e3a8a;border-left-color:var(--primary)}
+    .pill.bancohoras{background:var(--softPurple);color:#5b21b6;border-left-color:var(--purple)}
+    .pill.ferias{background:var(--softPink);color:#9d174d;border-left-color:var(--pink)}
+    .pill.outro{background:var(--softGray);color:#374151;border-left-color:#94a3b8}
+    .pill.conflict{background:var(--softRed);color:#991b1b;border-left-color:var(--red)}
+
+    .event-card{
+      background:white;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:11px;
+      box-shadow:0 3px 10px rgba(16,24,40,.07);
+    }
+
+    .event-card.conflict{border:2px solid var(--red);background:#fff8f8}
+    .event-title{font-weight:bold;font-size:18px;color:var(--primary2);margin-bottom:6px}
+    .line{font-size:14px;margin:5px 0;color:#374151}
+
+    .tag{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:bold;
+      margin:8px 5px 0 0;
+      background:#e0ecff;
+      color:#1e3a8a;
+    }
+
+    .tag-warning{background:var(--softOrange);color:#7c4a00}
+    .tag-red{background:var(--softRed);color:#991b1b}
+    .tag-green{background:var(--softGreen);color:#166534}
+    .tag-purple{background:var(--softPurple);color:#5b21b6}
+
+    .viewed{margin-top:11px;padding-top:11px;border-top:1px dashed var(--border)}
+    .viewed-title{font-weight:bold;font-size:13px;margin-bottom:8px}
+
+    .people{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+    .person{
+      background:#f3f4f6;
+      color:#374151;
+      text-align:left;
+      padding:8px;
+      font-size:13px;
+      border-radius:10px;
+    }
+    .person.ok{background:var(--softGreen);color:#166534;box-shadow:inset 0 0 0 1px #b7efc5}
+
+    table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden}
+    th,td{border-bottom:1px solid var(--border);padding:10px;text-align:left;font-size:14px;vertical-align:top}
+    th{background:#edf5ff;color:#1f3f66}
+    .status-ok{color:#166534;font-weight:bold}
+    .status-alert{color:#991b1b;font-weight:bold}
+
+    .alert{
+      display:none;
+      padding:12px 13px;
+      border-radius:12px;
+      margin-top:12px;
+      font-weight:bold;
+      background:var(--softOrange);
+      color:#7c4a00;
+      border:1px solid #facc15;
+    }
+    .alert.show{display:block}
+
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .filters select,.filters input{max-width:215px}
+
+    .sync-box{
+      background:#f8fbff;
+      border:1px dashed #9fc5e8;
+      border-radius:14px;
+      padding:12px;
+      color:#334155;
+      line-height:1.4;
+      font-size:14px;
+    }
+
+    @media(max-width:1050px){
+      .grid{grid-template-columns:1fr}
+      .summary{grid-template-columns:repeat(2,1fr)}
+      .calendar{min-width:780px}
+      .calendar-wrap{overflow-x:auto}
+    }
+
+    @media(max-width:640px){
+      main{padding:14px}
+      header{padding:20px}
+      header h1{font-size:24px}
+      .summary{grid-template-columns:1fr}
+      .row{grid-template-columns:1fr}
+      .people{grid-template-columns:1fr}
+      .calendar{min-width:720px}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Agenda da Equipe</h1>
+  <p>Organização leve dos compromissos, consultas, HO e banco de horas — sem aprovação, apenas visibilidade.</p>
+</header>
+
+<main>
+  <div class="notice">
+    <strong>Objetivo:</strong> dar transparência aos compromissos da equipe para evitar coincidências de horários e manter o setor sempre coberto.
+    Os dias de <strong>Feriado</strong> ficam em vermelho claro, e a marcação de <strong>Banco de horas</strong> é bloqueada em toda a semana que tiver feriado.
+  </div>
+
+  <section class="summary">
+    <div class="summary-card s1"><strong id="sumHoje">0</strong><span>Compromissos hoje</span></div>
+    <div class="summary-card s2"><strong id="sumSemana">0</strong><span>Próximos 7 dias</span></div>
+    <div class="summary-card s3"><strong id="sumPendentes">0</strong><span>Visualizações pendentes</span></div>
+    <div class="summary-card s4"><strong id="sumConflitos">0</strong><span>Sobreposições</span></div>
+  </section>
+
+  <div class="grid">
+    <aside>
+      <section class="panel">
+        <h2>Novo compromisso</h2>
+
+        <label>Quem?</label>
+        <select id="pessoa">
+          <option value="">Selecione</option>
+          <option>Marcelo</option>
+          <option>Anna</option>
+          <option>Rafaela</option>
+          <option>Raquel</option>
+          <option>Maria</option>
+        </select>
+
+        <label>Tipo</label>
+        <select id="tipo">
+          <option>Consulta médica</option>
+          <option>Exame</option>
+          <option>Atraso previsto</option>
+          <option>Saída particular</option>
+          <option>Banco</option>
+          <option>HO</option>
+          <option>Curso/Treinamento</option>
+          <option>Reunião externa</option>
+          <option>Banco de horas</option>
+          <option>Férias</option>
+          <option>Outro</option>
+        </select>
+
+        <label>Data</label>
+        <input type="date" id="data">
+
+        <div class="row">
+          <div>
+            <label>Início</label>
+            <input type="time" id="inicio" placeholder="00:00">
+          </div>
+          <div>
+            <label>Fim</label>
+            <input type="time" id="fim" placeholder="00:00">
+          </div>
+        </div>
+
+        <label style="display:flex;align-items:center;gap:8px;font-weight:normal;">
+          <input type="checkbox" id="diaInteiro" style="width:auto;" onchange="toggleDiaInteiro()">
+          Dia inteiro
+        </label>
+
+        <label>Observação</label>
+        <textarea id="obs" placeholder="Ex.: consulta às 14h, retorno previsto às 16h"></textarea>
+
+        <div class="actions">
+          <button class="btn-primary" onclick="salvarCompromisso()">Salvar compromisso</button>
+          <button class="btn-light" onclick="limparForm()">Limpar</button>
+        </div>
+
+        <div id="alerta" class="alert"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Feriados / F</h2>
+        <label>Data com F</label>
+        <input type="date" id="dataFeriado">
+        <label>Descrição</label>
+        <input type="text" id="descFeriado" placeholder="Ex.: Feriado municipal">
+        <div class="actions">
+          <button class="btn-primary" onclick="adicionarFeriado()">Cadastrar F</button>
+        </div>
+        <div id="listaFeriados" style="margin-top:12px;"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Equipe hoje</h2>
+        <table>
+          <thead>
+            <tr><th>Nome</th><th>Status</th></tr>
+          </thead>
+          <tbody id="tabelaEquipe"></tbody>
+        </table>
+      </section>
+
+      <section class="panel">
+        <h2>Compartilhamento</h2>
+        <div class="sync-box">
+          Este app está conectado ao Firebase (Cloud Firestore). Compromissos e feriados cadastrados por qualquer pessoa aparecem automaticamente para todos que abrirem esta página, em tempo real.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Ferramentas</h2>
+        <div class="actions">
+          <button class="btn-light" onclick="exportarCSV()">Exportar CSV</button>
+          <button class="btn-danger" onclick="limparTudo()">Limpar todos</button>
+        </div>
+      </section>
+    </aside>
+
+    <section>
+      <div class="panel">
+        <div class="calendar-head">
+          <button class="btn-light" onclick="mudarMes(-1)">◀ Mês anterior</button>
+          <div class="calendar-title" id="tituloMes"></div>
+          <button class="btn-light" onclick="mudarMes(1)">Próximo mês ▶</button>
+        </div>
+
+        <div class="calendar-wrap">
+          <div class="calendar">
+            <div class="dow">DOM</div><div class="dow">SEG</div><div class="dow">TER</div><div class="dow">QUA</div><div class="dow">QUI</div><div class="dow">SEX</div><div class="dow">SÁB</div>
+          </div>
+          <div class="calendar" id="calendario"></div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <h2 id="tituloDia">Compromissos do dia</h2>
+
+        <div class="filters">
+          <select id="filtroPessoa" onchange="render()">
+            <option value="">Todos</option>
+            <option>Marcelo</option>
+            <option>Anna</option>
+            <option>Rafaela</option>
+            <option>Raquel</option>
+            <option>Maria</option>
+          </select>
+
+          <select id="filtroTipo" onchange="render()">
+            <option value="">Todos os tipos</option>
+            <option>Consulta médica</option>
+            <option>Exame</option>
+            <option>Atraso previsto</option>
+            <option>Saída particular</option>
+            <option>Banco</option>
+            <option>HO</option>
+            <option>Curso/Treinamento</option>
+            <option>Reunião externa</option>
+            <option>Banco de horas</option>
+            <option>Férias</option>
+            <option>Outro</option>
+          </select>
+        </div>
+
+        <div id="listaDia"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Relatório mensal/anual por colaborador</h2>
+        <div class="filters">
+          <select id="relPessoa" onchange="renderRelatorio()">
+            <option value="">Todos</option>
+            <option>Marcelo</option>
+            <option>Anna</option>
+            <option>Rafaela</option>
+            <option>Raquel</option>
+            <option>Maria</option>
+          </select>
+          <input type="month" id="relMes" onchange="renderRelatorio()">
+          <button class="btn-light" onclick="limparRelatorio()">Limpar filtro</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead id="relHead"></thead>
+            <tbody id="relBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, writeBatch
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCqgMSgaiQtzlzGwJmLMlQbPR2teoR9lo",
+  authDomain: "central-agenda-9c3b7.firebaseapp.com",
+  projectId: "central-agenda-9c3b7",
+  storageBucket: "central-agenda-9c3b7.firebasestorage.app",
+  messagingSenderId: "64063426675",
+  appId: "1:64063426675:web:7d55b0e11ba713d358da06",
+  measurementId: "G-XJEM56P422"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const compromissosCol = collection(db, "compromissos");
+const feriadosCol = collection(db, "feriados");
+let feriadosSeeded = false;
+
+const PESSOAS = ["Marcelo","Anna","Rafaela","Raquel","Maria"];
+const TIPOS = ["Consulta médica","Exame","Atraso previsto","Saída particular","Banco","HO","Curso/Treinamento","Reunião externa","Banco de horas","Férias","Outro"];
+const FERIADOS_PADRAO = [
+  {id:"f20260907", data:"2026-09-07", desc:"Feriado"},
+  {id:"f20261012", data:"2026-10-12", desc:"Feriado"},
+  {id:"f20261015", data:"2026-10-15", desc:"Feriado"},
+  {id:"f20261102", data:"2026-11-02", desc:"Feriado"},
+  {id:"f20261115", data:"2026-11-15", desc:"Feriado"},
+  {id:"f20261120", data:"2026-11-20", desc:"Feriado"},
+  {id:"f20261225", data:"2026-12-25", desc:"Feriado"}
+];
+
+let compromissos = [];
+let feriados = [];
+
+let hoje = new Date();
+let mesAtual = hoje.getMonth();
+let anoAtual = hoje.getFullYear();
+let diaSelecionado = isoLocal(hoje);
+
+function isoLocal(date){
+  const y = date.getFullYear();
+  const m = String(date.getMonth()+1).padStart(2,"0");
+  const d = String(date.getDate()).padStart(2,"0");
+  return `${y}-${m}-${d}`;
+}
+
+function br(data){
+  if(!data) return "";
+  const [a,m,d] = data.split("-");
+  return `${d}/${m}/${a}`;
+}
+
+function mesNome(m,a){
+  return new Date(a,m,1).toLocaleDateString("pt-BR", {month:"long", year:"numeric"});
+}
+
+const CLASSE_POR_TIPO = {
+  "Consulta médica":"medico",
+  "Exame":"exame",
+  "Atraso previsto":"atraso",
+  "Saída particular":"saida",
+  "Banco":"banco",
+  "HO":"ho",
+  "Curso/Treinamento":"curso",
+  "Reunião externa":"reuniao",
+  "Banco de horas":"bancohoras",
+  "Férias":"ferias",
+  "Outro":"outro"
+};
+
+function classeTipo(tipo){
+  if(CLASSE_POR_TIPO[tipo]) return CLASSE_POR_TIPO[tipo];
+  // compatibilidade com registros antigos salvos antes da renomeação
+  const t = tipo.toLowerCase();
+  if(t.includes("home")) return "ho";
+  if(t.includes("consulta") || t.includes("exame")) return "medico";
+  if(t.includes("atraso")) return "atraso";
+  if(t.includes("folga")) return "bancohoras";
+  if(t.includes("férias") || t.includes("ferias")) return "ferias";
+  return "outro";
+}
+
+function sobrepoe(aI,aF,bI,bF){ return aI < bF && bI < aF; }
+
+function conflitosDe(item){
+  return compromissos.filter(c =>
+    c.id !== item.id &&
+    c.data === item.data &&
+    sobrepoe(item.inicio,item.fim,c.inicio,c.fim)
+  );
+}
+
+function visualPendentes(c){ return PESSOAS.filter(p => !c.visualizado?.[p]); }
+
+function mostrarAlerta(txt){
+  const el = document.getElementById("alerta");
+  el.textContent = txt;
+  el.classList.add("show");
+}
+
+function esconderAlerta(){
+  const el = document.getElementById("alerta");
+  el.textContent = "";
+  el.classList.remove("show");
+}
+
+function inicioSemana(dataISO){
+  const d = new Date(dataISO + "T00:00:00");
+  const day = d.getDay();
+  d.setDate(d.getDate() - day);
+  return isoLocal(d);
+}
+
+function fimSemana(dataISO){
+  const d = new Date(dataISO + "T00:00:00");
+  const day = d.getDay();
+  d.setDate(d.getDate() + (6 - day));
+  return isoLocal(d);
+}
+
+function semanaTemFeriado(dataISO){
+  const ini = inicioSemana(dataISO);
+  const fim = fimSemana(dataISO);
+  return feriados.some(f => f.data >= ini && f.data <= fim);
+}
+
+function feriadosDaSemana(dataISO){
+  const ini = inicioSemana(dataISO);
+  const fim = fimSemana(dataISO);
+  return feriados.filter(f => f.data >= ini && f.data <= fim);
+}
+
+function toggleDiaInteiro(){
+  const chk = document.getElementById("diaInteiro").checked;
+  const ini = document.getElementById("inicio");
+  const fim = document.getElementById("fim");
+  if(chk){
+    ini.value = "00:00";
+    fim.value = "23:59";
+    ini.disabled = true;
+    fim.disabled = true;
+  } else {
+    ini.disabled = false;
+    fim.disabled = false;
+  }
+}
+
+async function salvarCompromisso(){
+  const pessoa = document.getElementById("pessoa").value;
+  const tipo = document.getElementById("tipo").value;
+  const data = document.getElementById("data").value;
+  const diaInteiro = document.getElementById("diaInteiro").checked;
+  const inicio = diaInteiro ? "00:00" : document.getElementById("inicio").value;
+  const fim = diaInteiro ? "23:59" : document.getElementById("fim").value;
+  const obs = document.getElementById("obs").value.trim();
+
+  if(!pessoa || !data || !inicio || !fim){
+    mostrarAlerta("Preencha quem, data, início e fim.");
+    return;
+  }
+
+  if(inicio >= fim){
+    mostrarAlerta("O horário final precisa ser maior que o inicial.");
+    return;
+  }
+
+  if(tipo === "Banco de horas" && semanaTemFeriado(data)){
+    const fs = feriadosDaSemana(data).map(f => `${br(f.data)} - ${f.desc || "F"}`).join(", ");
+    mostrarAlerta("Esta semana possui F cadastrado (" + fs + "). Para manter equilíbrio, escolha outra semana para Banco de horas.");
+    return;
+  }
+
+  const novo = {pessoa, tipo, data, inicio, fim, diaInteiro, obs, visualizado:{}};
+  PESSOAS.forEach(p => novo.visualizado[p] = p === pessoa);
+
+  const conflitos = conflitosDe(novo);
+
+  if(conflitos.length){
+    const nomes = conflitos.map(c => `${c.pessoa} (${c.inicio}-${c.fim})`).join(", ");
+    const ok = confirm(`Atenção: já existe compromisso no mesmo período:\n\n${nomes}\n\nDeseja salvar mesmo assim?`);
+    if(!ok) return;
+  }
+
+  await addDoc(compromissosCol, novo);
+  limparForm();
+  diaSelecionado = data;
+  mesAtual = Number(data.slice(5,7))-1;
+  anoAtual = Number(data.slice(0,4));
+  render();
+
+  if(conflitos.length){
+    mostrarAlerta("Compromisso salvo com sobreposição. O aviso ficará visível no calendário.");
+  } else {
+    esconderAlerta();
+  }
+}
+
+function limparForm(){
+  document.getElementById("pessoa").value = "";
+  document.getElementById("tipo").value = "Consulta médica";
+  document.getElementById("data").value = "";
+  document.getElementById("diaInteiro").checked = false;
+  document.getElementById("inicio").disabled = false;
+  document.getElementById("fim").disabled = false;
+  document.getElementById("inicio").value = "";
+  document.getElementById("fim").value = "";
+  document.getElementById("obs").value = "";
+}
+
+async function excluirCompromisso(cid){
+  if(!confirm("Deseja excluir este compromisso?")) return;
+  await deleteDoc(doc(db,"compromissos",cid));
+}
+
+async function duplicar(cid){
+  const c = compromissos.find(x => x.id === cid);
+  if(!c) return;
+  const novo = JSON.parse(JSON.stringify(c));
+  delete novo.id;
+  novo.visualizado = {};
+  PESSOAS.forEach(p => novo.visualizado[p] = false);
+  await addDoc(compromissosCol, novo);
+}
+
+async function marcarVisualizado(cid,pessoa){
+  const c = compromissos.find(x => x.id === cid);
+  if(!c) return;
+  const novoValor = !c.visualizado?.[pessoa];
+  await updateDoc(doc(db,"compromissos",cid), {["visualizado."+pessoa]: novoValor});
+}
+
+async function adicionarFeriado(){
+  const data = document.getElementById("dataFeriado").value;
+  const desc = document.getElementById("descFeriado").value.trim() || "F";
+
+  if(!data){
+    alert("Informe a data marcada com F.");
+    return;
+  }
+
+  if(feriados.some(f => f.data === data)){
+    alert("Esta data já está cadastrada como F.");
+    return;
+  }
+
+  await addDoc(feriadosCol, {data, desc});
+  document.getElementById("dataFeriado").value = "";
+  document.getElementById("descFeriado").value = "";
+}
+
+async function excluirFeriado(fid){
+  if(!confirm("Excluir este F?")) return;
+  await deleteDoc(doc(db,"feriados",fid));
+}
+
+function renderFeriados(){
+  const el = document.getElementById("listaFeriados");
+  if(!feriados.length){
+    el.innerHTML = "<p style='color:#6b7280'>Nenhum F cadastrado ainda.</p>";
+    return;
+  }
+
+  el.innerHTML = feriados.map(f => `
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff8f8;border:1px solid #ffd1d1;border-radius:10px;padding:8px;margin-bottom:6px;">
+      <span><strong>${br(f.data)}</strong> — ${f.desc || "F"}</span>
+      <button class="btn-danger btn-small" onclick="excluirFeriado('${f.id}')">Excluir</button>
+    </div>
+  `).join("");
+}
+
+function mudarMes(delta){
+  mesAtual += delta;
+  if(mesAtual < 0){mesAtual = 11; anoAtual--;}
+  if(mesAtual > 11){mesAtual = 0; anoAtual++;}
+  render();
+}
+
+function selecionarDia(data){
+  diaSelecionado = data;
+  render();
+}
+
+function eventosDoDia(data){ return compromissos.filter(c => c.data === data); }
+
+function passaFiltro(c){
+  const fp = document.getElementById("filtroPessoa").value;
+  const ft = document.getElementById("filtroTipo").value;
+  if(fp && c.pessoa !== fp) return false;
+  if(ft && c.tipo !== ft) return false;
+  return true;
+}
+
+function renderCalendario(){
+  document.getElementById("tituloMes").textContent = mesNome(mesAtual, anoAtual);
+  const cal = document.getElementById("calendario");
+  cal.innerHTML = "";
+
+  const primeiro = new Date(anoAtual, mesAtual, 1);
+  const inicio = new Date(primeiro);
+  inicio.setDate(1 - primeiro.getDay());
+  const hojeIso = isoLocal(new Date());
+
+  for(let i=0;i<42;i++){
+    const d = new Date(inicio);
+    d.setDate(inicio.getDate()+i);
+    const iso = isoLocal(d);
+    const fora = d.getMonth() !== mesAtual;
+    const eventos = eventosDoDia(iso).sort((a,b)=>a.inicio.localeCompare(b.inicio));
+    const isF = feriados.some(f => f.data === iso);
+    const weekF = semanaTemFeriado(iso);
+
+    const div = document.createElement("div");
+    div.className = "day" + (fora ? " out":"") + (iso === diaSelecionado ? " selected":"") + (iso === hojeIso ? " today":"") + (weekF ? " holiday-week":"");
+    div.onclick = () => selecionarDia(iso);
+
+    let html = `<div class="day-number">${d.getDate()} ${isF ? "<span class='holiday-flag'>FERIADO</span>" : ""}</div>`;
+    eventos.slice(0,3).forEach(e => {
+      const confl = conflitosDe(e).length > 0;
+      html += `<span class="pill ${classeTipo(e.tipo)} ${confl ? "conflict":""}">${e.diaInteiro ? "Dia inteiro" : e.inicio} ${e.pessoa}</span>`;
+    });
+    if(eventos.length > 3) html += `<span class="pill">+${eventos.length-3} mais</span>`;
+    div.innerHTML = html;
+    cal.appendChild(div);
+  }
+}
+
+function renderListaDia(){
+  document.getElementById("tituloDia").textContent = `Compromissos de ${br(diaSelecionado)}`;
+  const lista = document.getElementById("listaDia");
+  lista.innerHTML = "";
+
+  const fs = feriadosDaSemana(diaSelecionado);
+  if(fs.length){
+    lista.innerHTML += `<div class="event-card" style="background:#fff8f8;border-color:#ffd1d1;">
+      <div class="event-title">Semana com F</div>
+      <div class="line">Banco de horas bloqueado nesta semana.</div>
+      ${fs.map(f => `<span class="tag tag-red">${br(f.data)} - ${f.desc || "F"}</span>`).join("")}
+    </div>`;
+  }
+
+  const eventos = eventosDoDia(diaSelecionado).filter(passaFiltro).sort((a,b)=>a.inicio.localeCompare(b.inicio));
+
+  if(!eventos.length){
+    lista.innerHTML += "<p style='color:#6b7280'>Nenhum compromisso registrado para este dia.</p>";
+    return;
+  }
+
+  eventos.forEach(c => {
+    const confl = conflitosDe(c);
+    const pend = visualPendentes(c);
+    const div = document.createElement("div");
+    div.className = "event-card" + (confl.length ? " conflict":"");
+
+    div.innerHTML = `
+      <div class="event-title">${c.pessoa}</div>
+      <div class="line"><strong>Tipo:</strong> ${c.tipo}</div>
+      <div class="line"><strong>Horário:</strong> ${c.diaInteiro ? "Dia inteiro" : c.inicio + " às " + c.fim}</div>
+      ${c.obs ? `<div class="line"><strong>Obs.:</strong> ${c.obs}</div>` : ""}
+      <span class="tag ${pend.length ? "tag-warning":"tag-green"}">${pend.length ? pend.length + " visualização(ões) pendente(s)" : "Todos visualizaram"}</span>
+      ${confl.length ? `<span class="tag tag-red">Sobreposição de horário</span>` : ""}
+
+      <div class="viewed">
+        <div class="viewed-title">Visualizado por:</div>
+        <div class="people">
+          ${PESSOAS.map(p => `
+            <button class="person ${c.visualizado?.[p] ? "ok":""}" onclick="marcarVisualizado('${c.id}','${p}')">
+              ${c.visualizado?.[p] ? "✓ ":""}${p}
+            </button>`).join("")}
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-light btn-small" onclick="duplicar('${c.id}')">Duplicar</button>
+        <button class="btn-danger btn-small" onclick="excluirCompromisso('${c.id}')">Excluir</button>
+      </div>
+    `;
+    lista.appendChild(div);
+  });
+}
+
+function renderResumo(){
+  const h = isoLocal(new Date());
+  const limite = new Date();
+  limite.setDate(limite.getDate()+7);
+  const lim = isoLocal(limite);
+
+  document.getElementById("sumHoje").textContent = compromissos.filter(c => c.data === h).length;
+  document.getElementById("sumSemana").textContent = compromissos.filter(c => c.data >= h && c.data <= lim).length;
+  document.getElementById("sumPendentes").textContent = compromissos.reduce((acc,c)=>acc+visualPendentes(c).length,0);
+  document.getElementById("sumConflitos").textContent = compromissos.filter(c => conflitosDe(c).length > 0).length;
+}
+
+function renderEquipeHoje(){
+  const tbody = document.getElementById("tabelaEquipe");
+  const h = isoLocal(new Date());
+  tbody.innerHTML = "";
+
+  PESSOAS.forEach(p => {
+    const ev = compromissos.filter(c => c.data === h && c.pessoa === p).sort((a,b)=>a.inicio.localeCompare(b.inicio));
+    const tr = document.createElement("tr");
+    if(!ev.length){
+      tr.innerHTML = `<td>${p}</td><td class="status-ok">Sem registro</td>`;
+    } else {
+      tr.innerHTML = `<td>${p}</td><td class="status-alert">${ev.map(e => `${e.tipo}<br>${e.inicio}-${e.fim}`).join("<br><br>")}</td>`;
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+function renderRelatorio(){
+  const pessoaFiltro = document.getElementById("relPessoa").value;
+  const mesFiltro = document.getElementById("relMes").value;
+
+  const dados = {};
+
+  compromissos.forEach(c => {
+    if(pessoaFiltro && c.pessoa !== pessoaFiltro) return;
+    if(mesFiltro && !c.data.startsWith(mesFiltro)) return;
+
+    const chaveMes = c.data.slice(5,7) + "/" + c.data.slice(0,4);
+    const key = c.pessoa + "|" + chaveMes;
+
+    if(!dados[key]){
+      dados[key] = {pessoa:c.pessoa, mes:chaveMes, total:0};
+      TIPOS.forEach(t => dados[key][t] = 0);
+    }
+
+    dados[key][c.tipo] = (dados[key][c.tipo] || 0) + 1;
+    dados[key].total++;
+  });
+
+  document.getElementById("relHead").innerHTML = `
+    <tr>
+      <th>Colaborador</th>
+      <th>Mês/Ano</th>
+      ${TIPOS.map(t => `<th>${t}</th>`).join("")}
+      <th>Total</th>
+    </tr>
+  `;
+
+  const linhas = Object.values(dados).sort((a,b)=>(a.mes+a.pessoa).localeCompare(b.mes+b.pessoa));
+  document.getElementById("relBody").innerHTML = linhas.length ? linhas.map(r => `
+    <tr>
+      <td>${r.pessoa}</td>
+      <td>${r.mes}</td>
+      ${TIPOS.map(t => `<td>${r[t] || 0}</td>`).join("")}
+      <td><strong>${r.total}</strong></td>
+    </tr>
+  `).join("") : `<tr><td colspan="${TIPOS.length+3}" style="color:#6b7280">Nenhum registro encontrado.</td></tr>`;
+}
+
+function limparRelatorio(){
+  document.getElementById("relPessoa").value = "";
+  document.getElementById("relMes").value = "";
+  renderRelatorio();
+}
+
+function exportarCSV(){
+  if(!compromissos.length){
+    alert("Não há registros para exportar.");
+    return;
+  }
+  const cab = ["Pessoa","Tipo","Data","Início","Fim","Observação","Visualizado por","Pendente"];
+  const linhas = compromissos.map(c => [
+    c.pessoa,c.tipo,br(c.data),c.inicio,c.fim,c.obs || "",
+    PESSOAS.filter(p => c.visualizado?.[p]).join(", "),
+    PESSOAS.filter(p => !c.visualizado?.[p]).join(", ")
+  ]);
+
+  const csv = [cab,...linhas].map(l => l.map(campo => `"${String(campo).replaceAll('"','""')}"`).join(";")).join("\n");
+  const blob = new Blob(["\ufeff"+csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "agenda_da_equipe.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function limparTudo(){
+  if(!confirm("Tem certeza que deseja apagar todos os compromissos e feriados cadastrados?")) return;
+  const batch = writeBatch(db);
+  compromissos.forEach(c => batch.delete(doc(db,"compromissos",c.id)));
+  feriados.forEach(f => batch.delete(doc(db,"feriados",f.id)));
+  await batch.commit();
+}
+
+function render(){
+  renderResumo();
+  renderEquipeHoje();
+  renderCalendario();
+  renderListaDia();
+  renderFeriados();
+  renderRelatorio();
+}
+
+onSnapshot(compromissosCol, snap => {
+  compromissos = snap.docs.map(d => ({id:d.id, ...d.data()}));
+  render();
+});
+
+onSnapshot(feriadosCol, snap => {
+  feriados = snap.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b)=>a.data.localeCompare(b.data));
+  if(!feriados.length && !feriadosSeeded){
+    feriadosSeeded = true;
+    const batch = writeBatch(db);
+    FERIADOS_PADRAO.forEach(f => batch.set(doc(db,"feriados",f.id), {data:f.data, desc:f.desc}));
+    batch.commit();
+  }
+  render();
+});
+
+render();
+
+// Funções chamadas via atributos onclick/onchange no HTML precisam ficar acessíveis
+// globalmente, já que "type=module" não expõe automaticamente no escopo do window.
+Object.assign(window, {
+  salvarCompromisso, limparForm, adicionarFeriado, excluirFeriado,
+  mudarMes, exportarCSV, limparTudo, marcarVisualizado, duplicar,
+  excluirCompromisso, toggleDiaInteiro, render, renderRelatorio, limparRelatorio
+});
+</script>
+</body>
+</html>
